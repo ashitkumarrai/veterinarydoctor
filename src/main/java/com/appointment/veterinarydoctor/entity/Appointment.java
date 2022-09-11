@@ -60,7 +60,7 @@ public class Appointment {
     private String contact;
 
     @ManyToOne(cascade = CascadeType.ALL)
-   @JsonManagedReference
+   //@JsonManagedReference
     private Doctor doctor;
  
   

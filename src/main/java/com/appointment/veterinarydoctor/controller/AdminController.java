@@ -6,8 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,8 +22,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.appointment.veterinarydoctor.entity.Appointment;
 import com.appointment.veterinarydoctor.entity.Doctor;
-import com.appointment.veterinarydoctor.exception.NotFoundException;
+import com.appointment.veterinarydoctor.repository.AppointmentRepository;
 import com.appointment.veterinarydoctor.repository.DoctorRepository;
 
 @RestController
@@ -33,7 +36,7 @@ public class AdminController {
 public AdminController(DoctorRepository dr) {
     this.dr = dr;
 }
-@PostMapping("/doctor")
+@PostMapping(value = "/doctor")
 public ResponseEntity<Object>createBook(@Valid @RequestBody Doctor d){
      Doctor drObj = dr.save(d);
      
@@ -49,8 +52,8 @@ public List<Doctor> getAllBook() {
 
 
 @GetMapping(value="/doctor/{id}")
-public Doctor getBookById(@PathVariable("id")String id) throws NotFoundException {
-    return dr.findById(id).orElseThrow(NotFoundException::new);
+public Doctor getBookById(@PathVariable("id")String id) throws EntityNotFoundException {
+    return dr.findById(id).orElseThrow(EntityNotFoundException::new);
 }
 
 @DeleteMapping("/doctor/{id}")
@@ -65,11 +68,11 @@ public ResponseEntity<Map> deleteBook(@PathVariable("id") String id){
     
 }
 @PutMapping("/doctor/{id}")
-public Optional<Doctor> updateBook(@PathVariable("id") String id, @RequestBody Doctor d) throws NotFoundException {
+public Optional<Doctor> updateBook(@PathVariable("id") String id, @RequestBody Doctor d) throws EntityNotFoundException {
 
     Optional<Doctor> op = dr.findById(id);
     if (!op.isPresent()) {
-        throw new NotFoundException("doctor is not found in db");
+        throw new EntityNotFoundException("doctor is not found in db");
 
     } else if (op.get().getId() == id) {
         if (d.getFullName() != null && !("".equals(d.getFullName()))) {
@@ -83,7 +86,6 @@ public Optional<Doctor> updateBook(@PathVariable("id") String id, @RequestBody D
             op.get().setSpecialty(d.getSpecialty());
         }
 
-
         dr.save(op.get());
         return op;
 
@@ -91,6 +93,14 @@ public Optional<Doctor> updateBook(@PathVariable("id") String id, @RequestBody D
     //here we can throw exception for id cant be changed
 
     return null;
+}
+
+@Autowired
+    AppointmentRepository appointmentRepository;
+
+    @GetMapping(value="/appointment")
+public List<Appointment> getAlAppointments() {
+    return appointmentRepository.findAll();
 }
     
 
