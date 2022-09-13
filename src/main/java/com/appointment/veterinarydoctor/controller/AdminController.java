@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +23,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.appointment.veterinarydoctor.entity.Appointment;
 import com.appointment.veterinarydoctor.entity.Doctor;
+import com.appointment.veterinarydoctor.model.RecordNotFoundException;
 import com.appointment.veterinarydoctor.repository.AppointmentRepository;
 import com.appointment.veterinarydoctor.repository.DoctorRepository;
 
@@ -37,12 +37,13 @@ public AdminController(DoctorRepository dr) {
     this.dr = dr;
 }
 @PostMapping(value = "/doctor")
-public ResponseEntity<Object>createBook(@Valid @RequestBody Doctor d){
+public ResponseEntity<Map>createBook(@Valid @RequestBody Doctor d){
      Doctor drObj = dr.save(d);
      
      URI loc = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(drObj.getId()).toUri();
-     Map<String , String > map = new HashMap<>();
-    return ResponseEntity.created(loc).body(map.put("Response","created in database"));
+     Map<String, String> map = new HashMap<>();
+     map.put("Response", "created in database");
+    return ResponseEntity.status(HttpStatus.CREATED).body(map);
     
 }
 @GetMapping(value="/doctor")
@@ -52,27 +53,27 @@ public List<Doctor> getAllBook() {
 
 
 @GetMapping(value="/doctor/{id}")
-public Doctor getBookById(@PathVariable("id")String id) throws EntityNotFoundException {
-    return dr.findById(id).orElseThrow(EntityNotFoundException::new);
+public Doctor getBookById(@PathVariable("id")String id) throws RecordNotFoundException {
+    return dr.findById(id).orElseThrow(()-> new RecordNotFoundException("doctor is not found in db"));
 }
 
 @DeleteMapping("/doctor/{id}")
-public ResponseEntity<Map> deleteBook(@PathVariable("id") String id){
-    dr.deleteById(id);
+public ResponseEntity<Map> deleteBook(@PathVariable("id") String id)throws RecordNotFoundException{
 
-    Map<String , String > map = new HashMap<>();
-    return new ResponseEntity<>(map,  HttpStatus.OK);
+    Map<String, String> map = new HashMap<>();
+    map.put("Response", "deleted from database");
+    return new ResponseEntity<>(map, HttpStatus.NO_CONTENT);
 
    
 
     
 }
 @PutMapping("/doctor/{id}")
-public Optional<Doctor> updateBook(@PathVariable("id") String id, @RequestBody Doctor d) throws EntityNotFoundException {
+public Optional<Doctor> updateBook(@PathVariable("id") String id, @Valid @RequestBody Doctor d) throws RecordNotFoundException {
 
     Optional<Doctor> op = dr.findById(id);
     if (!op.isPresent()) {
-        throw new EntityNotFoundException("doctor is not found in db");
+        throw new RecordNotFoundException("doctor is not found in db");
 
     } else if (op.get().getId() == id) {
         if (d.getFullName() != null && !("".equals(d.getFullName()))) {

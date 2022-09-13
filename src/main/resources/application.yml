@@ -15,4 +15,3 @@ spring:
         ansi:
           enabled: ALWAYS
 
-          
