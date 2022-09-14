@@ -43,7 +43,7 @@ public ResponseEntity<Map>createBook(@Valid @RequestBody Doctor d){
      URI loc = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(drObj.getId()).toUri();
      Map<String, String> map = new HashMap<>();
      map.put("Response", "created in database");
-    return ResponseEntity.status(HttpStatus.CREATED).body(map);
+     return ResponseEntity.created(loc).body(map);
     
 }
 @GetMapping(value="/doctor")
