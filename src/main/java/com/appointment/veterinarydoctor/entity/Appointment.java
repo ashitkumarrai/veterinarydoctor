@@ -4,15 +4,19 @@ import java.util.Date;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.validation.Valid;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotBlank;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import lombok.AllArgsConstructor;
@@ -39,11 +43,14 @@ public class Appointment {
 
     private String petName;
     private int petAge;
+    @OneToOne(cascade = CascadeType.MERGE , fetch = FetchType.EAGER)
+    private PetOwner petOwner;
 
    
     @Future(message = "date not valid(it should be of future")
     //@JsonFormat(pattern = "yyyy-MM-dd")
     @JsonSerialize(using = CustomDateSerializer.class)
+    @JsonDeserialize(using = CustomDateDeserializer.class)
     private Date date;
 
 
@@ -53,25 +60,28 @@ public class Appointment {
     @NotBlank(message = "phone number is mandatory")
     private String contact;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.MERGE )
    //@JsonManagedReference
     private Doctor doctor;
+
+    public Appointment(String petName, int petAge,@Valid PetOwner petOwner,
+            @Future(message = "date not valid(it should be of future") Date date,
+            @NotBlank(message = "description is mandatory") String description,
+            @NotBlank(message = "phone number is mandatory") String contact) {
+        this.petName = petName;
+        this.petAge = petAge;
+        this.petOwner = petOwner;
+        this.date = date;
+        this.description = description;
+        this.contact = contact;
+    }
  
   
 
     
 
 
-    public Appointment(String petName, int petAge,
-            @Future(message = "date not valid(it should be of future") Date date,
-            @NotBlank(message = "description is mandatory") String description,
-            @NotBlank(message = "phone number is mandatory") String contact) {
-        this.petName = petName;
-        this.petAge = petAge;
-        this.date = date;
-        this.description = description;
-        this.contact = contact;
-    }
+  
 
 
 

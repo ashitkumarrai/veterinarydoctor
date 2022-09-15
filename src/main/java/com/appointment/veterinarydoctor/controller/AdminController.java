@@ -37,7 +37,7 @@ public AdminController(DoctorRepository dr) {
     this.dr = dr;
 }
 @PostMapping(value = "/doctor")
-public ResponseEntity<Map>createBook(@Valid @RequestBody Doctor d){
+public ResponseEntity<Map<String,String>>createBook(@Valid @RequestBody Doctor d){
      Doctor drObj = dr.save(d);
      
      URI loc = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(drObj.getId()).toUri();
@@ -58,16 +58,16 @@ public Doctor getBookById(@PathVariable("id")String id) throws RecordNotFoundExc
 }
 
 @DeleteMapping("/doctor/{id}")
-public ResponseEntity<Map> deleteBook(@PathVariable("id") String id)throws RecordNotFoundException{
+public ResponseEntity<Map<String, String>> deleteBook(@PathVariable("id") String id) throws RecordNotFoundException {
 
     Map<String, String> map = new HashMap<>();
+    dr.deleteById(id);
     map.put("Response", "deleted from database");
-    return new ResponseEntity<>(map, HttpStatus.NO_CONTENT);
+    return new ResponseEntity<>(map, HttpStatus.ACCEPTED);
 
-   
-
-    
 }
+
+
 @PutMapping("/doctor/{id}")
 public Optional<Doctor> updateBook(@PathVariable("id") String id, @Valid @RequestBody Doctor d) throws RecordNotFoundException {
 
@@ -75,25 +75,28 @@ public Optional<Doctor> updateBook(@PathVariable("id") String id, @Valid @Reques
     if (!op.isPresent()) {
         throw new RecordNotFoundException("doctor is not found in db");
 
-    } else if (op.get().getId() == id) {
-        if (d.getFullName() != null && !("".equals(d.getFullName()))) {
-            op.get().setFullName(d.getFullName());
-        }
-        if (d.getUser() != null && !("".equals(d.getUser()))) {
-            op.get().setUser(d.getUser());
-        }
+    } else {
+        if (op.get().getId().equals(id)) {
+            if (d.getFullName() != null && !("".equals(d.getFullName()))) {
+                op.get().setFullName(d.getFullName());
+            }
+            if (d.getUser() != null) {
+                op.get().setUser(d.getUser());
+            }
 
-        if (d.getSpecialty() != null && !("".equals(d.getSpecialty()))) {
-            op.get().setSpecialty(d.getSpecialty());
-        }
+            if (d.getSpecialty() != null && !("".equals(d.getSpecialty()))) {
+                op.get().setSpecialty(d.getSpecialty());
+            }
 
-        dr.save(op.get());
+            dr.save(op.get());
+           
+
+        }
         return op;
-
     }
     //here we can throw exception for id cant be changed
 
-    return null;
+ 
 }
 
 @Autowired

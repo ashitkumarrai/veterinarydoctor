@@ -1,9 +1,0 @@
-package com.appointment.veterinarydoctor.controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-@RestController
-@RequestMapping("/patient")
-public class PatientController {
-    //patients can send post request for appointments
-}

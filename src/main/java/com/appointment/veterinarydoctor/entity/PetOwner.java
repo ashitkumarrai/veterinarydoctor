@@ -11,6 +11,8 @@ import javax.validation.constraints.NotBlank;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,9 +24,9 @@ import lombok.ToString;
 
 @ToString()
 @Entity
-public class Patient {
+public class PetOwner {
 
-    public Patient(@NotBlank(message = "fullName is mandatory") String fullName, User user) {
+    public PetOwner(@NotBlank(message = "fullName is mandatory") String fullName, User user) {
         this.fullName = fullName;
         this.user = user;
         
@@ -43,6 +45,7 @@ public class Patient {
     private String fullName;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonBackReference
     private User user;
 
   
