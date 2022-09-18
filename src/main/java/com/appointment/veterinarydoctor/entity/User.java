@@ -1,13 +1,19 @@
 package com.appointment.veterinarydoctor.entity;
 
 
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 import org.hibernate.validator.constraints.Length;
+import org.springframework.stereotype.Controller;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
@@ -26,6 +32,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Controller
 public class User {
 	
 	@Id
@@ -52,6 +59,13 @@ public class User {
 
 	@JsonProperty(access = Access.WRITE_ONLY)
 	private String role;
+	@JsonProperty(access = Access.WRITE_ONLY)
+    //@Column(columnDefinition = "varchar(255) default 'ROLE_STUDENT'")
+    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.MERGE)
+	private Set<Role> roles;
 	
+	
+	@JsonProperty(access = Access.WRITE_ONLY)
+    private boolean enabled;
 
 }

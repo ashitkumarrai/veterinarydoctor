@@ -32,15 +32,30 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
        
         @Override
         protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-                HttpHeaders headers, HttpStatus status, WebRequest request) {
-            List<String> details = new ArrayList<>();
-            for (ObjectError error : ex.getBindingResult().getAllErrors()) {
-                details.add(error.getDefaultMessage());
-            }
-            ErrorResponse error = new ErrorResponse("Validation Failed", details,ex.getClass().getName());
-            return new ResponseEntity(error, HttpStatus.BAD_REQUEST);
+            HttpHeaders headers, HttpStatus status, WebRequest request) {
+          List<String> details = new ArrayList<>();
+          for (ObjectError error : ex.getBindingResult().getAllErrors()) {
+            details.add(error.getDefaultMessage());
+          }
+          ErrorResponse error = new ErrorResponse("Validation Failed", details, ex.getClass().getName());
+          return new ResponseEntity(error, HttpStatus.BAD_REQUEST);
         }
+        
 
+
+  @ExceptionHandler(UserDisabledException.class)
+  public final ResponseEntity<Object> handleUserDisabled(UserDisabledException ex, WebRequest request) {
+
+    ErrorResponse error = new ErrorResponse("User is disable contact admin to enable", ex.getClass().getName());
+    return new ResponseEntity(error, HttpStatus.UNAUTHORIZED);
+  }
+        
+  @ExceptionHandler(UserBadCredentialsException.class)
+  public final ResponseEntity<Object> handleUserBadCredentials(UserBadCredentialsException ex, WebRequest request) {
+   
+    ErrorResponse error = new ErrorResponse("Bad Credentials",ex.getClass().getName());
+    return new ResponseEntity(error, HttpStatus.UNAUTHORIZED);
+  }
         
 
         }

@@ -17,6 +17,11 @@ public class ErrorResponse
     this.getClass = getClass;
   }
  
+  public ErrorResponse(String message, String getClass) {
+    this.message = message;
+    this.getClass = getClass;
+  }
+
   //General error message about nature of error
   private String message;
  
