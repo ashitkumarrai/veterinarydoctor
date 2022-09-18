@@ -57,8 +57,7 @@ public class User {
 	private String email;
 	
 
-	@JsonProperty(access = Access.WRITE_ONLY)
-	private String role;
+	
 	@JsonProperty(access = Access.WRITE_ONLY)
     //@Column(columnDefinition = "varchar(255) default 'ROLE_STUDENT'")
     @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.MERGE)

@@ -54,7 +54,7 @@ public class Config extends WebSecurityConfigurerAdapter {
 		httpSecurity.csrf().disable()
 				// dont authenticate this particular request
 				.authorizeRequests()
-                .antMatchers("/authenticate").permitAll()
+                .antMatchers("/auth/**").permitAll()
            
               
                 .antMatchers("/admin/**").hasAnyAuthority("ADMIN")

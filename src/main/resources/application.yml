@@ -1,7 +1,7 @@
 spring:
     datasource:
         password: 123456789
-        url: jdbc:mysql://localhost:3306/veterinaryappointment
+        url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/veterinarydrappointment
         username: root
     jpa:
         hibernate:

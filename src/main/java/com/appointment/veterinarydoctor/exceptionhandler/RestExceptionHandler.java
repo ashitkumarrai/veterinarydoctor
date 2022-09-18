@@ -47,6 +47,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
   public final ResponseEntity<Object> handleUserDisabled(UserDisabledException ex, WebRequest request) {
 
     ErrorResponse error = new ErrorResponse("User is disable contact admin to enable", ex.getClass().getName());
+    
     return new ResponseEntity(error, HttpStatus.UNAUTHORIZED);
   }
         

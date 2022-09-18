@@ -20,6 +20,7 @@ public class ErrorResponse
   public ErrorResponse(String message, String getClass) {
     this.message = message;
     this.getClass = getClass;
+    this.details = List.of("custom error response");
   }
 
   //General error message about nature of error
