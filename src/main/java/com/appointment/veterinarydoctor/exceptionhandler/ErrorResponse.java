@@ -1,4 +1,4 @@
-package com.appointment.veterinarydoctor.model;
+package com.appointment.veterinarydoctor.exceptionhandler;
 
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;

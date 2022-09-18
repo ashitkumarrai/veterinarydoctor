@@ -1,6 +1,7 @@
 package com.appointment.veterinarydoctor.controller;
 import java.net.URI;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -17,7 +18,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.appointment.veterinarydoctor.entity.Appointment;
 import com.appointment.veterinarydoctor.entity.PetOwner;
-import com.appointment.veterinarydoctor.model.RecordNotFoundException;
+import com.appointment.veterinarydoctor.exceptionhandler.RecordNotFoundException;
 import com.appointment.veterinarydoctor.repository.AppointmentRepository;
 import com.appointment.veterinarydoctor.repository.PetOwnerRepository;
 
@@ -35,7 +36,7 @@ public class PetOwnerController {
     }
     
     
-    @PostMapping("/appointmentForm")
+    @PostMapping("/appointment")
     public ResponseEntity<Map<String, String>> createAppointment(@Valid @RequestBody Appointment appointment) {
         //PetOwner
 
@@ -49,9 +50,11 @@ public class PetOwnerController {
     }
 
     @GetMapping(value="appointment/{id}")
-public Appointment getAppointmentById(@PathVariable("id")String id) throws RecordNotFoundException {
-    return ar.findById(id).orElseThrow(()-> new RecordNotFoundException("appointment  not found in db"));
-}
+    public List<Appointment> getAppointmentById(@PathVariable("id") String id) throws RecordNotFoundException {
+        //it will take petOwnerId and return list of all appointments of that respective petOwner.
+        return ar.findByPetOwnerId(id);
+    }
+
 
 
 

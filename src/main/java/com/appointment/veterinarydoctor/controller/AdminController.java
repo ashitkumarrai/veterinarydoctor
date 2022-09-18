@@ -23,9 +23,11 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.appointment.veterinarydoctor.entity.Appointment;
 import com.appointment.veterinarydoctor.entity.Doctor;
-import com.appointment.veterinarydoctor.model.RecordNotFoundException;
+import com.appointment.veterinarydoctor.entity.PetOwner;
+import com.appointment.veterinarydoctor.exceptionhandler.RecordNotFoundException;
 import com.appointment.veterinarydoctor.repository.AppointmentRepository;
 import com.appointment.veterinarydoctor.repository.DoctorRepository;
+import com.appointment.veterinarydoctor.repository.PetOwnerRepository;
 
 @RestController
 @RequestMapping("/admin")
@@ -33,8 +35,11 @@ public class AdminController {
 
     private DoctorRepository dr;
 
-public AdminController(DoctorRepository dr) {
+    private PetOwnerRepository petOwnerRepository;
+
+public AdminController(DoctorRepository dr,PetOwnerRepository petOwnerRepository) {
     this.dr = dr;
+    this.petOwnerRepository = petOwnerRepository;
 }
 @PostMapping(value = "/doctor")
 public ResponseEntity<Map<String,String>>createBook(@Valid @RequestBody Doctor d){
@@ -69,7 +74,7 @@ public ResponseEntity<Map<String, String>> deleteBook(@PathVariable("id") String
 
 
 @PutMapping("/doctor/{id}")
-public Optional<Doctor> updateBook(@PathVariable("id") String id, @Valid @RequestBody Doctor d) throws RecordNotFoundException {
+public Optional<Doctor> updateDoctor(@PathVariable("id") String id, @Valid @RequestBody Doctor d) throws RecordNotFoundException {
 
     Optional<Doctor> op = dr.findById(id);
     if (!op.isPresent()) {
@@ -103,8 +108,12 @@ public Optional<Doctor> updateBook(@PathVariable("id") String id, @Valid @Reques
     AppointmentRepository appointmentRepository;
 
     @GetMapping(value="/appointment")
-public List<Appointment> getAlAppointments() {
-    return appointmentRepository.findAll();
+    public List<Appointment> getAlAppointments() {
+        return appointmentRepository.findAll();
+    }
+    @GetMapping(value="/petOwner")
+public List<PetOwner> getAllPetOwners() {
+    return petOwnerRepository.findAll();
 }
     
 

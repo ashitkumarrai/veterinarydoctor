@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.appointment.veterinarydoctor.entity.Appointment;
 import com.appointment.veterinarydoctor.entity.Doctor;
-import com.appointment.veterinarydoctor.model.RecordNotFoundException;
+import com.appointment.veterinarydoctor.exceptionhandler.RecordNotFoundException;
 import com.appointment.veterinarydoctor.repository.AppointmentRepository;
 import com.appointment.veterinarydoctor.repository.DoctorRepository;
 
