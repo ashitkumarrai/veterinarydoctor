@@ -11,6 +11,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,9 +22,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.appointment.veterinarydoctor.dto.DoctorDto;
 import com.appointment.veterinarydoctor.entity.Appointment;
 import com.appointment.veterinarydoctor.entity.Doctor;
 import com.appointment.veterinarydoctor.entity.PetOwner;
+import com.appointment.veterinarydoctor.entity.User;
 import com.appointment.veterinarydoctor.exceptionhandler.RecordNotFoundException;
 import com.appointment.veterinarydoctor.repository.AppointmentRepository;
 import com.appointment.veterinarydoctor.repository.DoctorRepository;
@@ -36,14 +39,38 @@ public class AdminController {
     private DoctorRepository dr;
 
     private PetOwnerRepository petOwnerRepository;
+    
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
 public AdminController(DoctorRepository dr,PetOwnerRepository petOwnerRepository) {
     this.dr = dr;
     this.petOwnerRepository = petOwnerRepository;
 }
 @PostMapping(value = "/doctor")
-public ResponseEntity<Map<String,String>>createBook(@Valid @RequestBody Doctor d){
-     Doctor drObj = dr.save(d);
+public ResponseEntity<Map<String, String>> createDr(@Valid @RequestBody DoctorDto d) {
+
+    Doctor doctor = new Doctor();
+  
+    doctor.setFullName(d.getFullName());
+    doctor.setAppointment(d.getAppointment());
+    doctor.setContact(d.getContact());
+    doctor.setSpecialty(d.getSpecialty());
+
+
+    User user = new User();
+    user.setEmail(d.getUser().getEmail());
+
+    user.setEnabled(d.getUser().isEnabled());
+
+    user.setRoles(d.getUser().getRoles());
+    user.setUsername(d.getUser().getUsername());
+    user.setPassword(passwordEncoder.encode(d.getUser().getPassword()));
+    doctor.setUser(user);
+
+
+    
+     Doctor drObj = dr.save(doctor);
      
      URI loc = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(drObj.getId()).toUri();
      Map<String, String> map = new HashMap<>();
@@ -52,7 +79,7 @@ public ResponseEntity<Map<String,String>>createBook(@Valid @RequestBody Doctor d
     
 }
 @GetMapping(value="/doctor")
-public List<Doctor> getAllBook() {
+public List<Doctor> getAllDr() {
     return dr.findAll();
 }
 
@@ -63,7 +90,7 @@ public Doctor getBookById(@PathVariable("id")String id) throws RecordNotFoundExc
 }
 
 @DeleteMapping("/doctor/{id}")
-public ResponseEntity<Map<String, String>> deleteBook(@PathVariable("id") String id) throws RecordNotFoundException {
+public ResponseEntity<Map<String, String>> deleteDr(@PathVariable("id") String id) throws RecordNotFoundException {
 
     Map<String, String> map = new HashMap<>();
     dr.deleteById(id);
@@ -116,7 +143,15 @@ public List<PetOwner> getAllPetOwners() {
     return petOwnerRepository.findAll();
 }
     
+@DeleteMapping("/petOwner/{id}")
+public ResponseEntity<Map<String, String>> deletePetOnwer(@PathVariable("id") String id) throws RecordNotFoundException {
 
+    Map<String, String> map = new HashMap<>();
+    petOwnerRepository.deleteById(id);
+    map.put("Response", "deleted from database");
+    return new ResponseEntity<>(map, HttpStatus.ACCEPTED);
+
+}
 }
 
     

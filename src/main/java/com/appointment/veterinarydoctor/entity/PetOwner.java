@@ -7,7 +7,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
-import javax.validation.constraints.NotBlank;
+
+
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -16,17 +17,17 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
+
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 
-@ToString()
+
 @Entity
 public class PetOwner {
 
-    public PetOwner(@NotBlank(message = "fullName is mandatory") String fullName, User user) {
+    public PetOwner( String fullName,  User user) {
         this.fullName = fullName;
         this.user = user;
         
@@ -41,11 +42,12 @@ public class PetOwner {
 
     private String id;
 
-    @NotBlank(message = "fullName is mandatory")
+    
     private String fullName;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonBackReference
+  
     private User user;
 
   

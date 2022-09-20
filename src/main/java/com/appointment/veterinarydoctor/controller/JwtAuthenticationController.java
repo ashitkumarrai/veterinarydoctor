@@ -1,7 +1,6 @@
 package com.appointment.veterinarydoctor.controller;
 
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,6 +22,7 @@ import com.appointment.veterinarydoctor.jwtconfig.UserDetailsServiceImpl;
 
 
 
+
 @RestController
 @CrossOrigin
 public class JwtAuthenticationController {
@@ -36,8 +36,10 @@ public class JwtAuthenticationController {
 	@Autowired
 	private UserDetailsServiceImpl userDetailsService;
 
+
+
 	@PostMapping("/auth/login/token")
-	public ResponseEntity<JwtResponse> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
+	public ResponseEntity<JwtResponse> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws UserDisabledException,UserBadCredentialsException{
 
 		authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
 
@@ -49,7 +51,7 @@ public class JwtAuthenticationController {
 		return ResponseEntity.ok(new JwtResponse(token));
 	}
 
-	private void authenticate(String username, String password) throws Exception {
+	private void authenticate(String username, String password) throws UserDisabledException,UserBadCredentialsException {
 		try {
 			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
 		} catch (DisabledException e) {
@@ -58,4 +60,7 @@ public class JwtAuthenticationController {
 			throw new UserBadCredentialsException("INVALID_CREDENTIALS");
 		}
 	}
-}
+
+
+	}
+

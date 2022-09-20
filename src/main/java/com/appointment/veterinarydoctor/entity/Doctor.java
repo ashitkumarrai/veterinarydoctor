@@ -11,9 +11,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -22,13 +19,12 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
+
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 
-@ToString()
 @Entity
 
 public class Doctor {
@@ -53,25 +49,25 @@ public class Doctor {
 
     
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @Valid
+    
     private User user;
 
-    @NotBlank(message = "fullName is mandatory")
+
     private String fullName;
 
 	
 	
     private String specialty;
-    @Pattern(regexp="^[2-9]{2}\\d{8}$",message= "phone number must have 10 digits")
+  
     private String contact;
     
     @OneToMany(cascade = CascadeType.ALL,fetch=FetchType.LAZY, mappedBy = "doctor")
     @JsonBackReference
-    @Valid
+   
     private Set<Appointment> appointment;
 
-    public Doctor(@Valid User user, @NotBlank(message = "fullName is mandatory") String fullName, String specialty,
-            @Pattern(regexp = "^[2-9]{2}\\d{8}$", message = "phone number must have 10 digits") String contact) {
+    public Doctor(User user,  String fullName, String specialty,
+             String contact) {
         this.user = user;
         this.fullName = fullName;
         this.specialty = specialty;
