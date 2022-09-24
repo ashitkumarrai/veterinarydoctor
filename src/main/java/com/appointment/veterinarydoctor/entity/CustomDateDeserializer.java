@@ -9,7 +9,6 @@ import java.util.Date;
 import org.springframework.boot.jackson.JsonComponent;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
@@ -31,7 +30,7 @@ public class CustomDateDeserializer extends StdDeserializer<Date> {
 
     @Override
     public Date deserialize(JsonParser jsonparser, DeserializationContext context)
-      throws IOException, JsonProcessingException {
+      throws IOException {
         String date = jsonparser.getText();
         try {
             return formatter.parse(date);

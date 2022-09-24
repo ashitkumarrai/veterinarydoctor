@@ -119,13 +119,24 @@ public class Config{
 
 	//Inject this field value directly into "filterChain", the only method that uses it
 	@Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity,JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,JwtRequestFilter jwtRequestFilter) throws Exception {
+	public SecurityFilterChain filterChain(HttpSecurity httpSecurity,
+			JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, JwtRequestFilter jwtRequestFilter)
+			throws Exception {
+		
+				final String[] WHITELIST_URL = {
+					"/swagger-resources/**",
+					"/swagger-ui/**",
+					"/v3/api-docs",
+						"/auth/**",
+						"/register/**",
+					"/webjars/**"
+			};
 		
 		httpSecurity.csrf().disable()
 				
 				.authorizeRequests()
-				.antMatchers("/auth/**").permitAll()
-				.antMatchers("/register/**").permitAll()
+				
+				.antMatchers(WHITELIST_URL).permitAll()
            
               
                 .antMatchers("/admin/**").hasAnyAuthority("ADMIN")
