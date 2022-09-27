@@ -12,7 +12,7 @@ Modules:
 
 ## Admin:
 
-Admin will look after the application who will check users and doctors and confirm appointments and send emails to the user. Admin updated user booking status to the doctor online.
+Admin will look after the application who will check users and doctors and confirm appointments and send emails to the user(petOwner). Admin updated user booking status to the doctor online.
 
 ## User:
 
