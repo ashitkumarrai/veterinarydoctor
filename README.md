@@ -1,4 +1,4 @@
-# veterinarydoctor
+# Veterinary Doctor Appointment System
 
 Proposed system:
 
