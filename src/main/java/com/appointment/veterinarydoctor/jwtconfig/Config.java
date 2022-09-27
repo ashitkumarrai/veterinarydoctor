@@ -129,6 +129,7 @@ public class Config{
 					"/v3/api-docs",
 						"/auth/**",
 						"/register/**",
+						"/h2-console/**",
 					"/webjars/**"
 			};
 		

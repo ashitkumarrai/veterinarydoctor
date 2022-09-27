@@ -15,7 +15,7 @@ class VeterinarydoctorApplicationTests {
 	
 	void createToken() 
 		{
-			RestTemplate template = new RestTemplate();
+			/*RestTemplate template = new RestTemplate();
 			Book b=new Book();
 			b.setName("ammullu");
 			b.setId(20);
@@ -24,7 +24,7 @@ class VeterinarydoctorApplicationTests {
 		     
 		    //Verify request succeed				
 		    assertEquals(201,result.getStatusCodeValue());
-		    System.out.println("hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii"+result.getStatusCodeValue());
+		    System.out.println("hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii"+result.getStatusCodeValue());*/
 		    }
 			
 }

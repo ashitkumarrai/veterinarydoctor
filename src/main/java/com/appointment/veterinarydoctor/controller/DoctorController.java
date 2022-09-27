@@ -31,7 +31,7 @@ public class DoctorController {
 
     @GetMapping(value = "appointments/{id}")
 public List<Appointment> getAppointmentById(@PathVariable("id")String  id) throws RecordNotFoundException {
-   //teacher details and list of students and course details
+  
    Optional<Doctor> d = dr.findById(id);
    Doctor doc=null;
    
@@ -43,7 +43,7 @@ public List<Appointment> getAppointmentById(@PathVariable("id")String  id) throw
 }
 
     @GetMapping(value="/{id}")
-    public Doctor getBookById(@PathVariable("id")String id) throws RecordNotFoundException {
+    public Doctor getDrById(@PathVariable("id")String id) throws RecordNotFoundException {
         return dr.findById(id).orElseThrow(()-> new RecordNotFoundException("doctor is not found in db"));
     }
 
