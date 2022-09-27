@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
@@ -29,11 +30,11 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 
-@ToString()
 @Entity
 @Builder
-
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Appointment {
+    @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "book_seq")
     @GenericGenerator(name = "book_seq", strategy = "com.appointment.veterinarydoctor.entity.StringPrefixedSequenceIdGenerator", parameters = {
@@ -45,7 +46,7 @@ public class Appointment {
 
     private String petName;
     private int petAge;
-    @OneToOne(cascade = CascadeType.MERGE , fetch = FetchType.EAGER)
+    @OneToOne(cascade = {CascadeType.MERGE, CascadeType.REMOVE} , fetch = FetchType.EAGER,orphanRemoval = true)
     private PetOwner petOwner;
 
    
