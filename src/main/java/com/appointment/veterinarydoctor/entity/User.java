@@ -48,7 +48,7 @@ public class User {
 	
 	@JsonProperty(access = Access.WRITE_ONLY)
   
-	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+	@ManyToMany(fetch = FetchType.EAGER, cascade =  CascadeType.ALL)
 	@Valid
 	private Set<Role> roles;
 	

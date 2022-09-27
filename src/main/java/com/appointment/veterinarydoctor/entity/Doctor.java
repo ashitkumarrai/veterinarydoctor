@@ -61,7 +61,7 @@ public class Doctor {
   
     private String contact;
     
-    @OneToMany(cascade = CascadeType.ALL,fetch=FetchType.LAZY, mappedBy = "doctor")
+    @OneToMany(cascade =  CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "doctor")
     @JsonBackReference
    
     private Set<Appointment> appointment;

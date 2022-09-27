@@ -43,7 +43,7 @@ public class Appointment {
 
     private String petName;
     private int petAge;
-    @OneToOne(cascade = CascadeType.MERGE , fetch = FetchType.EAGER)
+    @OneToOne(cascade =  CascadeType.MERGE , fetch = FetchType.EAGER)
     private PetOwner petOwner;
 
    

@@ -32,8 +32,11 @@ import com.appointment.veterinarydoctor.repository.AppointmentRepository;
 import com.appointment.veterinarydoctor.repository.DoctorRepository;
 import com.appointment.veterinarydoctor.repository.PetOwnerRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestController
 @RequestMapping("/admin")
+@Slf4j
 public class AdminController {
 
     private DoctorRepository dr;
@@ -93,7 +96,16 @@ public Doctor getBookById(@PathVariable("id")String id) throws RecordNotFoundExc
 public ResponseEntity<Map<String, String>> deleteDr(@PathVariable("id") String id) throws RecordNotFoundException {
 
     Map<String, String> map = new HashMap<>();
-    dr.deleteById(id);
+   try{dr.deleteById(id);}
+   catch (Exception e) {
+
+ 
+           throw new RecordNotFoundException(e.getMessage());
+  
+       }
+   
+
+   
     map.put("Response", "deleted from database");
     return new ResponseEntity<>(map, HttpStatus.ACCEPTED);
 
@@ -147,7 +159,14 @@ public List<PetOwner> getAllPetOwners() {
 public ResponseEntity<Map<String, String>> deletePetOnwer(@PathVariable("id") String id) throws RecordNotFoundException {
 
     Map<String, String> map = new HashMap<>();
-    petOwnerRepository.deleteById(id);
+    try{petOwnerRepository.deleteById(id);}
+    catch (Exception e) {
+ 
+  
+            throw new RecordNotFoundException(e.getMessage());
+   
+        }
+    
     map.put("Response", "deleted from database");
     return new ResponseEntity<>(map, HttpStatus.ACCEPTED);
 
