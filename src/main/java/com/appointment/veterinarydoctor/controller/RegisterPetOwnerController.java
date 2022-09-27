@@ -5,7 +5,9 @@ package com.appointment.veterinarydoctor.controller;
 
 import java.net.URI;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.validation.Valid;
 
@@ -19,6 +21,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.appointment.veterinarydoctor.dto.PetOwnerDto;
 import com.appointment.veterinarydoctor.entity.PetOwner;
+import com.appointment.veterinarydoctor.entity.Role;
 import com.appointment.veterinarydoctor.entity.User;
 import com.appointment.veterinarydoctor.repository.PetOwnerRepository;
 
@@ -43,8 +46,11 @@ public class RegisterPetOwnerController {
         user.setEmail(p.getUser().getEmail());
 
         user.setEnabled(p.getUser().isEnabled());
+       
+        Set<Role> roles = new HashSet<>();
+         roles.add(new Role(103,"PETOWNER"));
 
-        user.setRoles(p.getUser().getRoles());
+        user.setRoles(roles);
         user.setUsername(p.getUser().getUsername());
         user.setPassword(passwordEncoder.encode(p.getUser().getPassword()));
         petOwner.setUser(user);
