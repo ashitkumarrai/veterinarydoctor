@@ -9,6 +9,9 @@ import java.util.Optional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,6 +34,7 @@ import com.appointment.veterinarydoctor.exceptionhandler.RecordNotFoundException
 import com.appointment.veterinarydoctor.repository.AppointmentRepository;
 import com.appointment.veterinarydoctor.repository.DoctorRepository;
 import com.appointment.veterinarydoctor.repository.PetOwnerRepository;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/admin")
@@ -43,12 +47,18 @@ public class AdminController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-public AdminController(DoctorRepository dr,PetOwnerRepository petOwnerRepository) {
-    this.dr = dr;
-    this.petOwnerRepository = petOwnerRepository;
+    public AdminController(DoctorRepository dr, PetOwnerRepository petOwnerRepository) {
+        this.dr = dr;
+        this.petOwnerRepository = petOwnerRepository;
+    }
+
+    @GetMapping(value="/doctor")
+public List<Doctor> getAllDr() {
+    return dr.findAll();
 }
+
 @PostMapping(value = "/doctor")
-public ResponseEntity<Map<String, String>> createDr(@Valid @RequestBody DoctorDto d) {
+public ResponseEntity<EntityModel<Doctor>> createDr(@Valid @RequestBody DoctorDto d) {
 
     Doctor doctor = new Doctor();
   
@@ -72,20 +82,26 @@ public ResponseEntity<Map<String, String>> createDr(@Valid @RequestBody DoctorDt
     
      Doctor drObj = dr.save(doctor);
      
-     URI loc = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(drObj.getId()).toUri();
-     Map<String, String> map = new HashMap<>();
-     map.put("Response", "created in database");
-     return ResponseEntity.created(loc).body(map);
+     //URI loc = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(drObj.getId()).toUri();
+
+     EntityModel<Doctor> entityModel = EntityModel.of(drObj);
+
+     Link link = WebMvcLinkBuilder.linkTo(methodOn(this.getClass()).getDrById(drObj.getId())).withRel("new-user");
+
+
+    // Map<String, String> map = new HashMap<>();
+     //map.put("Response", "created in database");
+
+     //return ResponseEntity.created(loc).body(map);
+     entityModel.add(link);
+     ResponseEntity re = new ResponseEntity<>(entityModel,HttpStatus.CREATED);
+     return re;
     
-}
-@GetMapping(value="/doctor")
-public List<Doctor> getAllDr() {
-    return dr.findAll();
 }
 
 
 @GetMapping(value="/doctor/{id}")
-public Doctor getBookById(@PathVariable("id")String id) throws RecordNotFoundException {
+public Doctor getDrById(@PathVariable("id")String id) throws RecordNotFoundException {
     return dr.findById(id).orElseThrow(()-> new RecordNotFoundException("doctor is not found in db"));
 }
 
