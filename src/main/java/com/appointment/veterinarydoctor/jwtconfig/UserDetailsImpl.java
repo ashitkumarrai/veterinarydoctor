@@ -72,7 +72,7 @@ public class UserDetailsImpl implements UserDetails{
   
     @Override
     public boolean isEnabled() {
-        // it should return user isEnable.
+        // it should return user isEnable......(user.isenabled())
         return true;
     }
     

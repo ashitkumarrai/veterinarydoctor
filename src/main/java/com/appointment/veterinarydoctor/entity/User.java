@@ -56,6 +56,7 @@ public class User {
 	
 	
 	@JsonProperty(access = Access.WRITE_ONLY)
+	//for extra email event 
     private boolean enabled;
 
 

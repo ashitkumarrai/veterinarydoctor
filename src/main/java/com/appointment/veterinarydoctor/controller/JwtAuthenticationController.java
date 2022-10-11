@@ -46,7 +46,7 @@ public class JwtAuthenticationController {
 
 		final UserDetails userDetails = userDetailsService
 				.loadUserByUsername(authenticationRequest.getUsername());
-
+       //util is giving token
 		final String token = jwtTokenUtil.generateToken(userDetails);
 
 		return ResponseEntity.ok(new JwtResponse(token));
@@ -60,8 +60,10 @@ public class JwtAuthenticationController {
 		try {
 			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
 		} catch (DisabledException e) {
+			//for disabled user
 			throw new UserDisabledException("USER_DISABLED");
 		} catch (BadCredentialsException e) {
+			// for INVALID_CREDENTIALS
 			throw new UserBadCredentialsException("INVALID_CREDENTIALS");
 		}
 	}
