@@ -1,6 +1,6 @@
 package com.appointment.veterinarydoctor.controller;
 
-import java.net.URI;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
 
 import com.appointment.veterinarydoctor.dto.DoctorDto;
 import com.appointment.veterinarydoctor.entity.Appointment;
@@ -94,8 +94,8 @@ public ResponseEntity<EntityModel<Doctor>> createDr(@Valid @RequestBody DoctorDt
 
      //return ResponseEntity.created(loc).body(map);
      entityModel.add(link);
-     ResponseEntity re = new ResponseEntity<>(entityModel,HttpStatus.CREATED);
-     return re;
+  
+     return new ResponseEntity<>(entityModel,HttpStatus.CREATED);
     
 }
 

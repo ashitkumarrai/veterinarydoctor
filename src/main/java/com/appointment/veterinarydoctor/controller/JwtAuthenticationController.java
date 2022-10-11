@@ -39,7 +39,8 @@ public class JwtAuthenticationController {
 
 
 	@PostMapping("/auth/login/token")
-	public ResponseEntity<JwtResponse> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws UserDisabledException,UserBadCredentialsException{
+	public ResponseEntity<JwtResponse> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest)
+			throws UserDisabledException, UserBadCredentialsException {
 
 		authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
 
@@ -51,6 +52,10 @@ public class JwtAuthenticationController {
 		return ResponseEntity.ok(new JwtResponse(token));
 	}
 
+	
+
+
+	
 	private void authenticate(String username, String password) throws UserDisabledException,UserBadCredentialsException {
 		try {
 			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
