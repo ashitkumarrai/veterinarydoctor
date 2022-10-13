@@ -8,7 +8,6 @@ import java.util.List;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -27,7 +26,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
           List<String> details = new ArrayList<>();
           details.add(ex.getLocalizedMessage());
           ErrorResponse error = new ErrorResponse("Record Not Found", details,ex.getClass().getName());
-          return new ResponseEntity(error, HttpStatus.NOT_FOUND);
+          return new ResponseEntity<Object>(error, HttpStatus.NOT_FOUND);
         }
        
         @Override
@@ -36,7 +35,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
           List<String> details = new ArrayList<>();
           ex.getBindingResult().getAllErrors().forEach( error->details.add(error.getDefaultMessage()));
           ErrorResponse error = new ErrorResponse("Validation Failed", details, ex.getClass().getName());
-          return new ResponseEntity(error, HttpStatus.BAD_REQUEST);
+          return new ResponseEntity<Object>(error, HttpStatus.BAD_REQUEST);
         }
         
 
@@ -53,7 +52,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
   public final ResponseEntity<Object> handleUserBadCredentials(UserBadCredentialsException ex, WebRequest request) {
    
     ErrorResponse error = new ErrorResponse("Bad Credentials",ex.getClass().getName());
-    return new ResponseEntity(error, HttpStatus.UNAUTHORIZED);
+    return new ResponseEntity<Object>(error, HttpStatus.UNAUTHORIZED);
   }
         
 
