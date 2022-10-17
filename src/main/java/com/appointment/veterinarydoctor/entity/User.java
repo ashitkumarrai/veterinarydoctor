@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 import javax.validation.Valid;
 
 import org.springframework.stereotype.Component;
@@ -57,7 +58,11 @@ public class User {
 	
 	@JsonProperty(access = Access.WRITE_ONLY)
 	//for extra email event 
-    private boolean enabled;
+	private boolean enabled;
+	
+	@JsonProperty(access = Access.WRITE_ONLY)
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	private VerificationToken token;
 
 
 	

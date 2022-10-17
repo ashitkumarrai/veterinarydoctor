@@ -5,6 +5,7 @@ package com.appointment.veterinarydoctor.exceptionhandler;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,11 +51,28 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         
   @ExceptionHandler(UserBadCredentialsException.class)
   public final ResponseEntity<Object> handleUserBadCredentials(UserBadCredentialsException ex, WebRequest request) {
-   
-    ErrorResponse error = new ErrorResponse("Bad Credentials",ex.getClass().getName());
+
+    ErrorResponse error = new ErrorResponse("Bad Credentials", ex.getClass().getName());
     return new ResponseEntity<Object>(error, HttpStatus.UNAUTHORIZED);
   }
-        
+  
+
+
+  
+  @ExceptionHandler({ ConstraintViolationException.class })
+  public ResponseEntity<Object> handleConstraintViolation(ConstraintViolationException ex, WebRequest request) {
+    List<String> errors = new ArrayList<String>();
+    errors.add(ex.getCause().toString());
+
+    ErrorResponse apiError = new ErrorResponse(ex.getMessage(), errors,
+        ex.getClass().getName());
+    return new ResponseEntity<Object>(apiError, new HttpHeaders(), HttpStatus.NOT_ACCEPTABLE);
+
+    //return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
+  }
+
+
+  
 
         }
         
