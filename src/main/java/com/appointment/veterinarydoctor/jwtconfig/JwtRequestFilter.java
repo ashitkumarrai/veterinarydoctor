@@ -16,13 +16,10 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-
-
 import io.jsonwebtoken.ExpiredJwtException;
-import lombok.extern.slf4j.Slf4j;
 
 @Component
-@Slf4j
+
 public class JwtRequestFilter extends OncePerRequestFilter {
 
 	@Autowired

@@ -46,7 +46,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     ErrorResponse error = new ErrorResponse("User is disable contact admin to enable", ex.getClass().getName());
     
-    return new ResponseEntity(error, HttpStatus.UNAUTHORIZED);
+    return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
   }
         
   @ExceptionHandler(UserBadCredentialsException.class)

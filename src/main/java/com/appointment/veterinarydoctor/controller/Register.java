@@ -131,7 +131,7 @@ public class Register {
         emailDetails.setRecipient(sender);
         emailDetails.setSubject("New Doctor has Registered");
         
-        MultiValueMap<String, String> urlParams =new LinkedMultiValueMap();
+        MultiValueMap<String, String> urlParams =new LinkedMultiValueMap<>();
         
        urlParams.add("id", doctor.getId());
           urlParams.add("token", user.getToken().getToken());

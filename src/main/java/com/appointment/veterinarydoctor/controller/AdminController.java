@@ -1,7 +1,8 @@
 package com.appointment.veterinarydoctor.controller;
 
 
-import java.sql.SQLDataException;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -9,11 +10,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-
 import javax.validation.Valid;
 
-import org.hibernate.engine.jdbc.spi.SqlExceptionHelper;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.hateoas.EntityModel;
@@ -31,7 +29,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
 import com.appointment.veterinarydoctor.dto.DoctorDto;
 import com.appointment.veterinarydoctor.entity.Appointment;
 import com.appointment.veterinarydoctor.entity.Doctor;
@@ -42,7 +39,6 @@ import com.appointment.veterinarydoctor.exceptionhandler.RecordNotFoundException
 import com.appointment.veterinarydoctor.repository.AppointmentRepository;
 import com.appointment.veterinarydoctor.repository.DoctorRepository;
 import com.appointment.veterinarydoctor.repository.PetOwnerRepository;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/admin")
@@ -147,6 +143,7 @@ public Optional<Doctor> updateDoctor(@PathVariable("id") String id, @Valid @Requ
         throw new RecordNotFoundException("doctor is not found in db");
 
     } else {
+        //blank check and null checks
         if (op.get().getId().equals(id)) {
             if (d.getFullName() != null && !("".equals(d.getFullName()))) {
                 op.get().setFullName(d.getFullName());
