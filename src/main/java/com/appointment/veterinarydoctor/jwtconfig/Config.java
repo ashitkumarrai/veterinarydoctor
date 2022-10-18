@@ -130,7 +130,8 @@ public class Config{
 						"/auth/**",
 						"/register/**",
 						"/h2-console/**",
-					"/webjars/**"
+						"/webjars/**",
+					"/show/**"
 			};
 		
 		httpSecurity.csrf().disable()

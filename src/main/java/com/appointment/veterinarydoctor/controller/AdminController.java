@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
 import javax.validation.Valid;
@@ -24,7 +23,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -56,10 +54,7 @@ public class AdminController {
         this.petOwnerRepository = petOwnerRepository;
     }
 
-    @GetMapping(value="/doctor")
-public List<Doctor> getAllDr() {
-    return dr.findAll();
-}
+
 
 @PostMapping(value = "/doctor")
 public ResponseEntity<Object> createDr(@Valid @RequestBody DoctorDto d)   {
@@ -102,7 +97,7 @@ public ResponseEntity<Object> createDr(@Valid @RequestBody DoctorDto d)   {
 
      EntityModel<Doctor> entityModel = EntityModel.of(drObj);
 
-     Link link = WebMvcLinkBuilder.linkTo(methodOn(this.getClass()).getDrById(drObj.getId())).withRel("new-user");
+     Link link = WebMvcLinkBuilder.linkTo(methodOn(OpenController.class).getDrById(drObj.getId())).withRel("new-user");
 
 
     // Map<String, String> map = new HashMap<>();
@@ -116,10 +111,7 @@ public ResponseEntity<Object> createDr(@Valid @RequestBody DoctorDto d)   {
 }
 
 
-@GetMapping(value="/doctor/{id}")
-public Doctor getDrById(@PathVariable("id")String id) throws RecordNotFoundException {
-    return dr.findById(id).orElseThrow(()-> new RecordNotFoundException("doctor is not found in db"));
-}
+
 
 @DeleteMapping("/doctor/{id}")
 public ResponseEntity<Map<String, String>> deleteDr(@PathVariable("id") String id) throws Exception {
@@ -135,42 +127,15 @@ public ResponseEntity<Map<String, String>> deleteDr(@PathVariable("id") String i
 }
 
 
-@PutMapping("/doctor/{id}")
-public Optional<Doctor> updateDoctor(@PathVariable("id") String id, @Valid @RequestBody Doctor d) throws RecordNotFoundException {
 
-    Optional<Doctor> op = dr.findById(id);
-    if (!op.isPresent()) {
-        throw new RecordNotFoundException("doctor is not found in db");
-
-    } else {
-        //blank check and null checks
-        if (op.get().getId().equals(id)) {
-            if (d.getFullName() != null && !("".equals(d.getFullName()))) {
-                op.get().setFullName(d.getFullName());
-            }
-            if (d.getUser() != null) {
-                op.get().setUser(d.getUser());
-            }
-
-            if (d.getSpecialty() != null && !("".equals(d.getSpecialty()))) {
-                op.get().setSpecialty(d.getSpecialty());
-            }
-
-            dr.save(op.get());
-           
-
-        }
-        return op;
-    }
-    //here we can throw exception for id cant be changed
 
  
-}
+
 
 @Autowired
     AppointmentRepository appointmentRepository;
 
-    @GetMapping(value="/appointment")
+@GetMapping(value = "/appointment")
     public List<Appointment> getAlAppointments() {
         return appointmentRepository.findAll();
     }

@@ -39,7 +39,7 @@ public class DoctorDto {
 	
 	
     private String specialty;
-    @Pattern(regexp="^[2-9]{2}\\d{8}$",message= "phone number must have 10 digits")
+    @Pattern(regexp="^[2-9]{2}\\d{8}$",message= "phone number not valid")
     private String contact;
     
 

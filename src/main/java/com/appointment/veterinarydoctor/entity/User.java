@@ -10,7 +10,10 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.validation.Valid;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Pattern;
 
+import org.hibernate.validator.constraints.Length;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -34,18 +37,22 @@ public class User {
 	
 	@Id
 	@JsonProperty(access = Access.WRITE_ONLY)
+	@Length(min = 3,max=15, message = "must have min 3 chars and max 15 ")
+	@Pattern(regexp = "([\\w_\\.]){3,15}", message = "must be alpha-numeric [can contains underscore(_)or dot(.) and @]")
 	private String username;
 
 
-
+	
 	@JsonProperty(access = Access.WRITE_ONLY)
 	private String password;
 
 	
 
 
-
+	@Email(message = "Email should be valid")
 	private String email;
+	
+	
 	
 
 	

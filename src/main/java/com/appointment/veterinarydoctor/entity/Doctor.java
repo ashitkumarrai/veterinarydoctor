@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.validation.constraints.Pattern;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -63,7 +64,7 @@ public class Doctor {
 	
 	
     private String specialty;
-  
+    @Pattern(regexp="^[2-9]{2}\\d{8}$",message= "phone number not valid")
     private String contact;
     
     @OneToMany(cascade = CascadeType.ALL,fetch=FetchType.LAZY, mappedBy = "doctor")

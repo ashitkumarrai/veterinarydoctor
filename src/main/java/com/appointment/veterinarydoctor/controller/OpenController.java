@@ -3,9 +3,12 @@ package com.appointment.veterinarydoctor.controller;
 
 
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import java.net.URI;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -20,13 +23,14 @@ import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.appointment.veterinarydoctor.dto.DoctorDto;
@@ -44,12 +48,11 @@ import com.appointment.veterinarydoctor.repository.UserRepository;
 import com.appointment.veterinarydoctor.repository.VerificationTokenRepository;
 import com.appointment.veterinarydoctor.service.EmailService;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import lombok.extern.slf4j.Slf4j;
 
-@Controller
+@RestController
 @Slf4j
-public class Register {
+public class OpenController {
     @Autowired
     private PetOwnerRepository pr;
     @Autowired
@@ -63,7 +66,22 @@ public class Register {
    @Autowired
    private UserRepository userRepository;
    
-   @Autowired VerificationTokenRepository vtr ;
+   @Autowired
+   VerificationTokenRepository vtr;
+   //anyone can see list of all doctors
+
+   @GetMapping(value="/show/allDoctors")
+   public List<Doctor> getAllDr() {
+       return dr.findAll();
+   }
+
+   @GetMapping(value="/show/doctor/{id}")
+public Doctor getDrById(@PathVariable("id")String id) throws RecordNotFoundException {
+    return dr.findById(id).orElseThrow(()-> new RecordNotFoundException("doctor is not found in db"));
+}
+
+
+//petOwner can register
     @PostMapping("/register/petOwner")
     public ResponseEntity<EntityModel<PetOwner>> createPetOwner(@Valid @RequestBody PetOwnerDto p) {
         PetOwner petOwner = new PetOwner();
@@ -95,7 +113,7 @@ public class Register {
 
     }
     
-    
+    //doctors can register
     @PostMapping(value = "register/doctor")
     public ResponseEntity<EntityModel<Doctor>> createDr(@Valid @RequestBody DoctorDto d) {
 
