@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.appointment.veterinarydoctor.dto.DoctorDto;
 import com.appointment.veterinarydoctor.entity.Appointment;
 import com.appointment.veterinarydoctor.entity.Doctor;
 import com.appointment.veterinarydoctor.exceptionhandler.RecordNotFoundException;

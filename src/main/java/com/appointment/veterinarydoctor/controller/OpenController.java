@@ -1,8 +1,5 @@
 package com.appointment.veterinarydoctor.controller;
 
-
-
-
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.net.URI;
@@ -48,44 +45,41 @@ import com.appointment.veterinarydoctor.repository.UserRepository;
 import com.appointment.veterinarydoctor.repository.VerificationTokenRepository;
 import com.appointment.veterinarydoctor.service.EmailService;
 
-import lombok.extern.slf4j.Slf4j;
 
 @RestController
-@Slf4j
+
 public class OpenController {
     @Autowired
     private PetOwnerRepository pr;
     @Autowired
-   private PasswordEncoder passwordEncoder;
-   @Autowired
-   private DoctorRepository dr;
-   @Value("${spring.mail.username}")
-   private String sender;
-   @Autowired
-   private EmailService emailService;
-   @Autowired
-   private UserRepository userRepository;
-   
-   @Autowired
-   VerificationTokenRepository vtr;
-   //anyone can see list of all doctors
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private DoctorRepository dr;
+    @Value("${spring.mail.username}")
+    private String sender;
+    @Autowired
+    private EmailService emailService;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    VerificationTokenRepository vtr;
+    // anyone can see list of all doctors
 
-   @GetMapping(value="/show/allDoctors")
-   public List<Doctor> getAllDr() {
-       return dr.findAll();
-   }
+    @GetMapping(value = "/show/allDoctors")
+    public List<Doctor> getAllDr() {
+        return dr.findAll();
+    }
 
-   @GetMapping(value="/show/doctor/{id}")
-public Doctor getDrById(@PathVariable("id")String id) throws RecordNotFoundException {
-    return dr.findById(id).orElseThrow(()-> new RecordNotFoundException("doctor is not found in db"));
-}
+    @GetMapping(value = "/show/doctor/{id}")
+    public Doctor getDrById(@PathVariable("id") String id) throws RecordNotFoundException {
+        return dr.findById(id).orElseThrow(() -> new RecordNotFoundException("doctor is not found in db"));
+    }
 
-
-//petOwner can register
+    // petOwner can register
     @PostMapping("/register/petOwner")
     public ResponseEntity<EntityModel<PetOwner>> createPetOwner(@Valid @RequestBody PetOwnerDto p) {
         PetOwner petOwner = new PetOwner();
-
+           //setting Dtos
         petOwner.setFullName(p.getFullName());
 
         User user = new User();
@@ -99,21 +93,49 @@ public Doctor getDrById(@PathVariable("id")String id) throws RecordNotFoundExcep
         user.setRoles(roles);
         user.setUsername(p.getUser().getUsername());
         user.setPassword(passwordEncoder.encode(p.getUser().getPassword()));
+        String token = UUID.randomUUID().toString();
+        VerificationToken vt = new VerificationToken(token);
+
+        user.setToken(vt);
         petOwner.setUser(user);
 
-        log.info(passwordEncoder.encode(p.getUser().getPassword()));
+
         PetOwner obj = pr.save(petOwner);
+            // for verifiying petOwner Approval, Email will be send to petOwner given email i'd
+        EmailDetails emailDetails = new EmailDetails();
+
+        emailDetails.setRecipient(obj.getUser().getEmail());
+        emailDetails.setSubject("Welcome to Veterinary Dr. Appointment System");
+
+        MultiValueMap<String, String> urlParams = new LinkedMultiValueMap<>();
+
+        urlParams.add("id", obj.getId());
+        urlParams.add("token", user.getToken().getToken());
+
+        URI loc = ServletUriComponentsBuilder.fromCurrentRequest().path("").queryParams(urlParams)
+                .buildAndExpand().toUri();
+
+        String approvalLink = loc.toString();
+        emailDetails.setMsgBody(
+                "Hi Admin,\n New Doctor has register! \n To Approve and enable the registration: "
+                        + "\n\n" + "Full Name : " + obj.getFullName()
+                        + "\n\n" + "Id : " + obj.getId()                       
+                        + "\n\n" + "Email id : " + obj.getUser().getEmail()
+                        + "\n\n To Approve click on this approval link: " + approvalLink);
+
+        emailService.sendSimpleMail(emailDetails);
+
 
         EntityModel<PetOwner> entityModel = EntityModel.of(obj);
         Link link = WebMvcLinkBuilder.linkTo(methodOn(PetOwnerController.class).getPetOwnerDetails(obj.getId()))
-                .withRel("this-user");
+                .withRel("new-user");
         entityModel.add(link);
 
         return new ResponseEntity<>(entityModel, HttpStatus.CREATED);
 
     }
-    
-    //doctors can register
+
+    // doctors can register
     @PostMapping(value = "register/doctor")
     public ResponseEntity<EntityModel<Doctor>> createDr(@Valid @RequestBody DoctorDto d) {
 
@@ -142,18 +164,17 @@ public Doctor getDrById(@PathVariable("id")String id) throws RecordNotFoundExcep
         doctor.setUser(user);
 
         Doctor drObj = dr.save(doctor);
-        //for Admin Approval, Email will  be send to admin email i'd 
+        // for Admin Approval, Email will be send to admin email i'd
 
         EmailDetails emailDetails = new EmailDetails();
 
         emailDetails.setRecipient(sender);
         emailDetails.setSubject("New Doctor has Registered");
-        
-        MultiValueMap<String, String> urlParams =new LinkedMultiValueMap<>();
-        
-       urlParams.add("id", doctor.getId());
-          urlParams.add("token", user.getToken().getToken());
 
+        MultiValueMap<String, String> urlParams = new LinkedMultiValueMap<>();
+
+        urlParams.add("id", doctor.getId());
+        urlParams.add("token", user.getToken().getToken());
 
         URI loc = ServletUriComponentsBuilder.fromCurrentRequest().path("").queryParams(urlParams)
                 .buildAndExpand().toUri();
@@ -170,35 +191,66 @@ public Doctor getDrById(@PathVariable("id")String id) throws RecordNotFoundExcep
 
         emailService.sendSimpleMail(emailDetails);
 
-        //URI loc = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(drObj.getId()).toUri();
+        // URI loc =
+        // ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(drObj.getId()).toUri();
 
         EntityModel<Doctor> entityModel = EntityModel.of(drObj);
 
         Link link = WebMvcLinkBuilder.linkTo(methodOn(DoctorController.class).getDrById(drObj.getId()))
-                .withRel("new-user");
+                .withRel("new-doctor");
 
         // Map<String, String> map = new HashMap<>();
-        //map.put("Response", "created in database");
+        // map.put("Response", "created in database");
 
-        //return ResponseEntity.created(loc).body(map);
+        // return ResponseEntity.created(loc).body(map);
         entityModel.add(link);
 
         return new ResponseEntity<>(entityModel, HttpStatus.CREATED);
 
     }
+
+    
     @GetMapping(value="/register/doctor")
-    public ResponseEntity<Object> doApprove(@RequestParam("id") String id,@RequestParam("token") String token) {
+    public ResponseEntity<Object> doApprove(@RequestParam("id") String id, @RequestParam("token") String token) {
+        //verificaton link generating to send this link to admin mail to enable doctor
+        User tempUser = null;
+        tempUser = userRepository.findByTokenToken(token)
+                .orElseThrow(() -> new RecordNotFoundException("token is not found in db"));
+
+        Doctor tempDoc = dr.findById(id).orElseThrow(() -> new RecordNotFoundException("Doctor is not found in db"));
+        Map<String, String> r = new HashMap<>();
+
+        if (tempUser != null && tempDoc.getId().equals(id)) {
+            tempUser.setEnabled(true);
+            dr.save(tempDoc);
+            r.put("Response", "Doctor Registeration Approved.");
+            return new ResponseEntity<Object>(r, HttpStatus.OK);
+        } else {
+            r.put("Response", "id & token doesn't matched!");
+            return new ResponseEntity<Object>(r, HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
+
+
+
+    
+
+    @GetMapping(value="/register/petOwner")
+    public ResponseEntity<Object> doApproveUser(@RequestParam("id") String id, @RequestParam("token") String token) {
+         //verificaton link generating to send this link to user given mail to enable user
         User tempUser=null;
          tempUser= userRepository.findByTokenToken(token).orElseThrow(() -> new RecordNotFoundException("token is not found in db"));
         
 
-            Doctor tempDoc = dr.findById(id).orElseThrow(() -> new RecordNotFoundException("Doctor is not found in db"));
+            PetOwner tempPetOwner = pr.findById(id).orElseThrow(() -> new RecordNotFoundException("petOwner is not found in db"));
             Map<String, String> r = new HashMap<>();
             
-            if (tempUser != null && tempDoc.getId().equals(id)) {
+            if (tempUser != null && tempPetOwner.getId().equals(id)) {
                 tempUser.setEnabled(true);
-                dr.save(tempDoc);
-                r.put("Response", "Doctor Registeration Approved.");
+                pr.save(tempPetOwner);
+                r.put("Response", "PetOwner Registeration Approved.");
                 return new ResponseEntity<Object>(r, HttpStatus.OK);
             }
             else {
@@ -206,11 +258,5 @@ public Doctor getDrById(@PathVariable("id")String id) throws RecordNotFoundExcep
                 return new ResponseEntity<Object>(r, HttpStatus.BAD_REQUEST);
         }
 
-    
-        
-
-
-
     }
-
 }
