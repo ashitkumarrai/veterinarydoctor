@@ -16,7 +16,7 @@
 
  Project Language: java +spring boot .properties and .yml(external file for configuration)        
 
- mandatory requirements done :
+ ### mandatory requirements done :
 -all credentials are encoded by CryptPasswordEncoder .
 
 -jwt security is used(with required roles)
